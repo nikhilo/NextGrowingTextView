@@ -31,14 +31,14 @@ internal class NextGrowingInternalTextView: UITextView {
 
   var didChange: () -> Void = {}
   var didUpdateHeightDependencies: () -> Void = {}
-  
+
   private lazy var placeholderDisplayLabel = UILabel()
 
   override init(frame: CGRect, textContainer: NSTextContainer?) {
     super.init(frame: frame, textContainer: textContainer)
 
-    NotificationCenter.default.addObserver(self, selector: #selector(NextGrowingInternalTextView.textDidChangeNotification(_ :)), name: UITextView.textDidChangeNotification, object: self)
-    
+    NotificationCenter.default.addObserver(self, selector: #selector(NextGrowingInternalTextView.textDidChangeNotification(_ :)), name: .UITextViewTextDidChange, object: self)
+
     placeholderDisplayLabel.numberOfLines = 0
     placeholderDisplayLabel.adjustsFontSizeToFitWidth = true
     placeholderDisplayLabel.minimumScaleFactor = 0.4
@@ -59,26 +59,26 @@ internal class NextGrowingInternalTextView: UITextView {
       updatePlaceholder()
     }
   }
-  
+
   override var attributedText: NSAttributedString! {
     didSet {
       didChange()
       updatePlaceholder()
     }
   }
-    
+
   override var font: UIFont? {
     didSet {
       didUpdateHeightDependencies()
     }
   }
-    
+
   override var textContainerInset: UIEdgeInsets {
     didSet {
       didUpdateHeightDependencies()
     }
   }
-  
+
   var placeholderAttributedText: NSAttributedString? {
     get {
       placeholderDisplayLabel.attributedText
@@ -91,12 +91,12 @@ internal class NextGrowingInternalTextView: UITextView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    
+
     let maxSize = bounds.inset(by: textContainerInset).size
-    
+
     var size = placeholderDisplayLabel.sizeThatFits(maxSize)
     size.height = min(size.height, maxSize.height)
-    
+
     placeholderDisplayLabel.frame = CGRect(
       origin: .init(
         x: 5 + textContainerInset.left,
@@ -104,7 +104,7 @@ internal class NextGrowingInternalTextView: UITextView {
       ),
       size: size
     )
-    
+
   }
 
   // MARK: Private
